@@ -1,22 +1,49 @@
--- Criar tabela de autores
-CREATE TABLE Autores (
-id_autor INT PRIMARY KEY AUTO_INCREMENT,
-nome_autor VARCHAR(100) NOT NULL
+DROP TABLE AUTORES;
+DROP TABLE LIVROS;
+DROP TABLE PEDIDOS;
+DROP TABLE GENEROS;
+
+CREATE TABLE AUTORES (
+    ID_AUTOR        INT             PRIMARY KEY,
+    NOME_AUTOR      VARCHAR(100)    NOT NULL
+); 
+
+CREATE TABLE LIVROS (
+id_livro        INT             PRIMARY KEY,
+titulo_livro    VARCHAR(100)    NOT NULL,
+id_autor        INT             NULL
 );
 
--- Criar tabela de livros
-CREATE TABLE Livros (
-id_livro INT PRIMARY KEY AUTO_INCREMENT,
-titulo_livro VARCHAR(100) NOT NULL,
-id_autor INT,
-FOREIGN KEY (id_autor) REFERENCES Autores(id_autor)
+CREATE TABLE PEDIDOS (
+id_pedido       INT     PRIMARY KEY,
+id_livro        INT     NULL,
+quantidade      INT     NOT NULL,
+data_pedido     DATE    NOT NULL
 );
 
--- Criar tabela de pedidos
-CREATE TABLE Pedidos (
-id_pedido INT PRIMARY KEY AUTO_INCREMENT,
-id_livro INT,
-quantidade INT NOT NULL,
-data_pedido DATE NOT NULL,
-FOREIGN KEY (id_livro) REFERENCES Livros(id_livro)
+CREATE TABLE GENEROS (
+    id_genero   INT             PRIMARY KEY,
+    nome_genero VARCHAR(50)     NOT NULL
 );
+
+ALTER TABLE LIVROS ADD id_genero INT;
+
+ALTER TABLE Livros
+ADD FOREIGN KEY (id_genero) REFERENCES Generos(id_genero);
+
+SELECT 
+    a.nome_autor,
+    g.nome_genero,
+    SUM(p.quantidade) AS total_vendas
+FROM 
+    Pedidos p
+JOIN 
+    Livros l ON p.id_livro = l.id_livro
+JOIN 
+    Autores a ON l.id_autor = a.id_autor
+JOIN 
+    Generos g ON l.id_genero = g.id_genero
+GROUP BY 
+    a.nome_autor, g.nome_genero
+ORDER BY 
+    a.nome_autor, g.nome_genero;
