@@ -15,12 +15,19 @@ def criar_tabelas(conn):
         )
     ''')
     cursor.execute('''
+        CREATE TABLE IF NOT EXISTS generos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL
+        )
+    ''')
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS livros (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             titulo TEXT NOT NULL,
             id_autor INTEGER,
-            genero TEXT NOT NULL,
-            FOREIGN KEY (id_autor) REFERENCES autores(id)
+            id_genero INTEGER,
+            FOREIGN KEY (id_autor) REFERENCES autores(id),
+            FOREIGN KEY (id_genero) REFERENCES generos(id)
         )
     ''')
     cursor.execute('''
@@ -80,9 +87,10 @@ def relatorios(conn):
 
     elif opcao == '3':
         cursor.execute('''
-            SELECT l.genero, SUM(p.quantidade) FROM livros l
+            SELECT g.nome, SUM(p.quantidade) FROM generos g
+            JOIN livros l ON g.id = l.id_genero
             JOIN pedidos p ON l.id = p.id_livro
-            GROUP BY l.genero
+            GROUP BY g.nome
         ''')
         for row in cursor.fetchall():
             print(f"Gênero: {row[0]}, Total de Vendas: {row[1]}")
@@ -105,22 +113,27 @@ def inserir_registro(conn):
     while True:
         print("\nInserir Registro:")
         print("1. Autores")
-        print("2. Livros")
-        print("3. Pedidos")
+        print("2. Gêneros")
+        print("3. Livros")
+        print("4. Pedidos")
         opcao = input("Escolha uma opção: ")
         cursor = conn.cursor()
 
         if opcao == '1':
             nome = input("Digite o nome do autor: ")
             cursor.execute('INSERT INTO autores (nome) VALUES (?)', (nome,))
-        
+
         elif opcao == '2':
+            nome_genero = input("Digite o nome do gênero: ")
+            cursor.execute('INSERT INTO generos (nome) VALUES (?)', (nome_genero,))
+
+        elif opcao == '3':
             titulo = input("Digite o título do livro: ")
             id_autor = int(input("Digite o ID do autor: "))
-            genero = input("Digite o gênero do livro: ")
-            cursor.execute('INSERT INTO livros (titulo, id_autor, genero) VALUES (?, ?, ?)', (titulo, id_autor, genero))
-        
-        elif opcao == '3':
+            id_genero = int(input("Digite o ID do gênero: "))
+            cursor.execute('INSERT INTO livros (titulo, id_autor, id_genero) VALUES (?, ?, ?)', (titulo, id_autor, id_genero))
+
+        elif opcao == '4':
             id_livro = int(input("Digite o ID do livro: "))
             quantidade = int(input("Digite a quantidade vendida: "))
             cursor.execute('INSERT INTO pedidos (id_livro, quantidade) VALUES (?, ?)', (id_livro, quantidade))
@@ -141,35 +154,40 @@ def remover_registro(conn):
     while True:
         print("\nRemover Registro:")
         print("1. Autores")
-        print("2. Livros")
-        print("3. Pedidos")
+        print("2. Gêneros")
+        print("3. Livros")
+        print("4. Pedidos")
         opcao = input("Escolha uma opção: ")
         cursor = conn.cursor()
 
         if opcao == '1':
             cursor.execute('SELECT id, nome FROM autores')
-            autores = cursor.fetchall()
-            for autor in autores:
+            for autor in cursor.fetchall():
                 print(f"{autor[0]}. {autor[1]}")
             id_autor = int(input("Digite o ID do autor a ser removido: "))
             cursor.execute('DELETE FROM autores WHERE id = ?', (id_autor,))
-        
+
         elif opcao == '2':
+            cursor.execute('SELECT id, nome FROM generos')
+            for genero in cursor.fetchall():
+                print(f"{genero[0]}. {genero[1]}")
+            id_genero = int(input("Digite o ID do gênero a ser removido: "))
+            cursor.execute('DELETE FROM generos WHERE id = ?', (id_genero,))
+
+        elif opcao == '3':
             cursor.execute('SELECT id, titulo FROM livros')
-            livros = cursor.fetchall()
-            for livro in livros:
+            for livro in cursor.fetchall():
                 print(f"{livro[0]}. {livro[1]}")
             id_livro = int(input("Digite o ID do livro a ser removido: "))
             cursor.execute('DELETE FROM livros WHERE id = ?', (id_livro,))
-        
-        elif opcao == '3':
+
+        elif opcao == '4':
             cursor.execute('SELECT id, id_livro, quantidade FROM pedidos')
-            pedidos = cursor.fetchall()
-            for pedido in pedidos:
+            for pedido in cursor.fetchall():
                 print(f"{pedido[0]}. Livro ID: {pedido[1]}, Quantidade: {pedido[2]}")
             id_pedido = int(input("Digite o ID do pedido a ser removido: "))
             cursor.execute('DELETE FROM pedidos WHERE id = ?', (id_pedido,))
-        
+
         else:
             print("Opção inválida.")
             continue
@@ -186,39 +204,44 @@ def atualizar_registro(conn):
     while True:
         print("\nAtualizar Registro:")
         print("1. Autores")
-        print("2. Livros")
-        print("3. Pedidos")
+        print("2. Gêneros")
+        print("3. Livros")
+        print("4. Pedidos")
         opcao = input("Escolha uma opção: ")
         cursor = conn.cursor()
 
         if opcao == '1':
             cursor.execute('SELECT id, nome FROM autores')
-            autores = cursor.fetchall()
-            for autor in autores:
+            for autor in cursor.fetchall():
                 print(f"{autor[0]}. {autor[1]}")
             id_autor = int(input("Digite o ID do autor a ser atualizado: "))
             novo_nome = input("Digite o novo nome do autor: ")
             cursor.execute('UPDATE autores SET nome = ? WHERE id = ?', (novo_nome, id_autor))
-        
+
         elif opcao == '2':
+            cursor.execute('SELECT id, nome FROM generos')
+            for genero in cursor.fetchall():
+                print(f"{genero[0]}. {genero[1]}")
+            id_genero = int(input("Digite o ID do gênero a ser atualizado: "))
+            novo_nome = input("Digite o novo nome do gênero: ")
+            cursor.execute('UPDATE generos SET nome = ? WHERE id = ?', (novo_nome, id_genero))
+
+        elif opcao == '3':
             cursor.execute('SELECT id, titulo FROM livros')
-            livros = cursor.fetchall()
-            for livro in livros:
+            for livro in cursor.fetchall():
                 print(f"{livro[0]}. {livro[1]}")
             id_livro = int(input("Digite o ID do livro a ser atualizado: "))
             novo_titulo = input("Digite o novo título do livro: ")
-            novo_genero = input("Digite o novo gênero do livro: ")
-            cursor.execute('UPDATE livros SET titulo = ?, genero = ? WHERE id = ?', (novo_titulo, novo_genero, id_livro))
-        
-        elif opcao == '3':
+            cursor.execute('UPDATE livros SET titulo = ? WHERE id = ?', (novo_titulo, id_livro))
+
+        elif opcao == '4':
             cursor.execute('SELECT id, id_livro, quantidade FROM pedidos')
-            pedidos = cursor.fetchall()
-            for pedido in pedidos:
+            for pedido in cursor.fetchall():
                 print(f"{pedido[0]}. Livro ID: {pedido[1]}, Quantidade: {pedido[2]}")
             id_pedido = int(input("Digite o ID do pedido a ser atualizado: "))
             nova_quantidade = int(input("Digite a nova quantidade: "))
             cursor.execute('UPDATE pedidos SET quantidade = ? WHERE id = ?', (nova_quantidade, id_pedido))
-        
+
         else:
             print("Opção inválida.")
             continue
@@ -230,23 +253,16 @@ def atualizar_registro(conn):
         if continuar.lower() != 's':
             break
 
-# Função principal
+# Função principal para execução do programa
 def main():
-    splash_screen()
     conn = conectar()
     criar_tabelas(conn)
-
-    total_autores = contar_registros(conn, 'autores')
-    total_livros = contar_registros(conn, 'livros')
-    total_pedidos = contar_registros(conn, 'pedidos')
-    print(f"Número de autores: {total_autores}")
-    print(f"Número de livros: {total_livros}")
-    print(f"Número de pedidos: {total_pedidos}")
+    splash_screen()
 
     while True:
         exibir_menu()
         opcao = input("Escolha uma opção: ")
-        
+
         if opcao == '1':
             relatorios(conn)
         elif opcao == '2':
@@ -259,7 +275,7 @@ def main():
             print("Saindo do programa...")
             break
         else:
-            print("Opção inválida.")
+            print("Opção inválida. Tente novamente.")
 
     conn.close()
 
