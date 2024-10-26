@@ -1,4 +1,12 @@
-Ajeitar o menu;
-fazer o video;
-fazer o readme;
-Integrantes.
+Requisitos
+Antes de começar, certifique-se de ter instalado:
+
+Python 3
+SQLite (caso não esteja incluso na sua distribuição)
+Instruções de Uso
+1-Clone o repositório para sua máquina.
+2-Acesse o diretório do projeto no terminal.
+3-Execute o programa com o Python, usando o seguinte comando:
+python3 arquivo.py
+Esse comando abrirá o menu principal do programa, onde você poderá inserir, atualizar, remover ou consultar os registros da livraria.
+4-Interaja com o Menu: Siga as opções exibidas no menu para gerenciar os dados conforme desejado.
