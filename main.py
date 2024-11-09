@@ -2,15 +2,56 @@ from livro import Livro
 from autor import Autor
 from generos import Genero
 from pedido import Pedido
+from Relatorio import Relatorio
+from db_connection import conectar
+
+def splash_screen():
+    """Exibe a tela de boas-vindas (Splash Screen) com o nome da aplicação e os componentes do grupo."""
+    print("#" * 40)
+    print("#" * 7 + " SISTEMA DE VENDAS " + "#" * 7)
+    print("#" * 40)
+    print("# TOTAL DE REGISTROS EXISTENTES #")
+
+    # Executa consultas para contar o número de registros em cada tabela
+    connection = conectar()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT COUNT(1) FROM fornecedores")
+    fornecedores_count = cursor.fetchone()[0]
+    cursor.execute("SELECT COUNT(1) FROM clientes")
+    clientes_count = cursor.fetchone()[0]
+    cursor.execute("SELECT COUNT(1) FROM produtos")
+    produtos_count = cursor.fetchone()[0]
+    cursor.execute("SELECT COUNT(1) FROM pedidos")
+    pedidos_count = cursor.fetchone()[0]
+    cursor.execute("SELECT COUNT(1) FROM itens")
+    itens_count = cursor.fetchone()[0]
+
+    print(f"1 - FORNECEDORES: {fornecedores_count}")
+    print(f"2 - CLIENTES: {clientes_count}")
+    print(f"3 - PRODUTOS: {produtos_count}")
+    print(f"4 - PEDIDOS: {pedidos_count}")
+    print(f"5 - ITENS: {itens_count}")
+
+    print("\n# CRIADO POR: FULANO #")
+    print("# BELTRANO #")
+    print("# CICLANO #")
+    print("\n# DISCIPLINA: BANCO DE DADOS #")
+    print("# 2022/2 #")
+    print("# PROFESSOR: HOWARD ROATTI #")
+    print("#" * 40)
 
 def main():
+    splash_screen()
+
     while True:
         print("\nMenu Principal:")
         print("1. Gerenciar Livros")
         print("2. Gerenciar Autores")
         print("3. Gerenciar Gêneros")
         print("4. Gerenciar Pedidos")
-        print("5. Sair")
+        print("5. Exibir Relatórios")
+        print("6. Sair")
         
         opcao = input("Escolha uma opção: ")
 
@@ -51,8 +92,10 @@ def main():
                 continue
             else:
                 print("Opção inválida.")
-
+        
         elif opcao == '2':
+            # Gerenciamento de Autores
+            print("\nGerenciar Autores:")
             print("\nGerenciar Autores:")
             print("1. Listar Autores")
             print("2. Adicionar Autor")
@@ -85,8 +128,9 @@ def main():
                 continue
             else:
                 print("Opção inválida.")
-
+        
         elif opcao == '3':
+            # Gerenciamento de Gêneros
             print("\nGerenciar Gêneros:")
             print("1. Listar Gêneros")
             print("2. Adicionar Gênero")
@@ -119,8 +163,9 @@ def main():
                 continue
             else:
                 print("Opção inválida.")
-
+        
         elif opcao == '4':
+            # Gerenciamento de Pedidos
             print("\nGerenciar Pedidos:")
             print("1. Listar Pedidos")
             print("2. Adicionar Pedido")
@@ -155,8 +200,24 @@ def main():
                 continue
             else:
                 print("Opção inválida.")
-
+        
         elif opcao == '5':
+            print("\nExibir Relatórios:")
+            print("1. Relatório de Vendas por Gênero")
+            print("2. Relatório Detalhado de Pedidos")
+            print("3. Voltar ao Menu Principal")
+            opcao_relatorio = input("Escolha uma opção: ")
+            
+            if opcao_relatorio == '1':
+                Relatorio.relatorio_pedidos_por_genero()
+            elif opcao_relatorio == '2':
+                Relatorio.relatorio_pedidos_detalhados()
+            elif opcao_relatorio == '3':
+                continue
+            else:
+                print("Opção inválida.")
+        
+        elif opcao == '6':
             print("Saindo...")
             break
         else:
