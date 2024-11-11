@@ -38,7 +38,7 @@ class Pedido:
     def listar():
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute("SELECT pedidos.id_pedido, livros.titulo_livro, pedidos.quantidade , pedidos.data_pedido  FROM pedidos INNER JOIN livros ON livros.id_livro = livros.id_livro")
+        cursor.execute("SELECT pedidos.id_pedido, livros.titulo_livro, pedidos.quantidade , pedidos.data_pedido FROM pedidos JOIN livros ON pedidos.id_livro = livros.id_livro")
         pedidos = cursor.fetchall()
         conn.close()
         return pedidos
