@@ -1,12 +1,26 @@
-Requisitos
-Antes de começar, certifique-se de ter instalado:
+Pré-requisitos
+Python 3.8 ou superior
+Microsoft SQL Server
+ODBC Driver 18 para SQL Server (ou uma versão compatível)
 
-Python 3
-SQLite (caso não esteja incluso na sua distribuição)
-Instruções de Uso
-1-Clone o repositório para sua máquina.
-2-Acesse o diretório do projeto no terminal.
-3-Execute o programa com o Python, usando o seguinte comando:
-python3 arquivo.py
-Esse comando abrirá o menu principal do programa, onde você poderá inserir, atualizar, remover ou consultar os registros da livraria.
-4-Interaja com o Menu: Siga as opções exibidas no menu para gerenciar os dados conforme desejado.
+Configuração do Ambiente
+Instale o Python: Certifique-se de que o Python 3.8 ou superior está instalado em sua máquina. Você pode baixar o Python aqui.
+
+Instale o SQL Server: Baixe e instale o Microsoft SQL Server. Certifique-se de configurar uma instância de servidor e definir as credenciais de administrador.
+
+Instale o ODBC Driver para SQL Server:
+
+Baixe o driver mais recente aqui.
+Siga as instruções fornecidas para instalá-lo em seu sistema.
+Instale as dependências do projeto:
+
+Use o pip para instalar as bibliotecas necessárias:
+pip install pyodbc
+
+Crie o banco de dados e tabelas:
+
+Acesse o SQL Server Management Studio (SSMS) e execute os comandos SQL que constam dentro da pasta sql para criar as tabelas. 
+
+Configure a conexão com o SQL Server:
+
+Atualize o arquivo db_connection.py (dentro da pasta src/conexion) com suas credenciais de conexão ao SQL Server
