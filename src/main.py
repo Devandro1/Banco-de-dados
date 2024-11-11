@@ -1,8 +1,8 @@
-from livro import Livro
-from autor import Autor
+from livros import Livro
+from autores import Autor
 from generos import Genero
-from pedido import Pedido
-from Relatorio import Relatorio
+from pedidos import Pedido
+from relatorios import Relatorio
 from db_connection import conectar
 
 def splash_screen():
@@ -16,28 +16,26 @@ def splash_screen():
     connection = conectar()
     cursor = connection.cursor()
 
-    cursor.execute("SELECT COUNT(1) FROM fornecedores")
+    cursor.execute("SELECT COUNT(1) FROM autores")
     fornecedores_count = cursor.fetchone()[0]
-    cursor.execute("SELECT COUNT(1) FROM clientes")
+    cursor.execute("SELECT COUNT(1) FROM livros")
     clientes_count = cursor.fetchone()[0]
-    cursor.execute("SELECT COUNT(1) FROM produtos")
+    cursor.execute("SELECT COUNT(1) FROM generos")
     produtos_count = cursor.fetchone()[0]
     cursor.execute("SELECT COUNT(1) FROM pedidos")
     pedidos_count = cursor.fetchone()[0]
-    cursor.execute("SELECT COUNT(1) FROM itens")
-    itens_count = cursor.fetchone()[0]
 
-    print(f"1 - FORNECEDORES: {fornecedores_count}")
-    print(f"2 - CLIENTES: {clientes_count}")
-    print(f"3 - PRODUTOS: {produtos_count}")
+
+    print(f"1 - AUTORES: {fornecedores_count}")
+    print(f"2 - LIVROS: {clientes_count}")
+    print(f"3 - GENEROS: {produtos_count}")
     print(f"4 - PEDIDOS: {pedidos_count}")
-    print(f"5 - ITENS: {itens_count}")
 
-    print("\n# CRIADO POR: FULANO #")
-    print("# BELTRANO #")
-    print("# CICLANO #")
+    print("\n# CRIADO POR: Eduardo Rodrigues #")
+    print("# Emanuel #")
+    print("# Devandro #")
     print("\n# DISCIPLINA: BANCO DE DADOS #")
-    print("# 2022/2 #")
+    print("# 2024/2 #")
     print("# PROFESSOR: HOWARD ROATTI #")
     print("#" * 40)
 
@@ -45,6 +43,7 @@ def main():
     splash_screen()
 
     while True:
+        
         print("\nMenu Principal:")
         print("1. Gerenciar Livros")
         print("2. Gerenciar Autores")
@@ -66,13 +65,14 @@ def main():
             
             if opcao_livro == '1':
                 livros = Livro.listar()
-                for livro in livros:
-                    print(livro)
+                for id_livro, titulo_livro, nome_genero, nome_autor in livros:
+                 print(f"ID: {id_livro}, Nome: {titulo_livro}, Gênero: {nome_genero}, Autor: {nome_autor}")
             elif opcao_livro == '2':
+                id_livro = int(input("Id do Livro: "))
                 titulo = input("Título: ")
                 id_autor = int(input("ID do Autor: "))
                 id_genero = int(input("ID do Gênero: "))
-                novo_livro = Livro(titulo=titulo, id_autor=id_autor, id_genero=id_genero)
+                novo_livro = Livro(id_livro=id_livro, titulo_livro=titulo, id_autor=id_autor, id_genero=id_genero)
                 novo_livro.inserir()
                 print("Livro adicionado com sucesso!")
             elif opcao_livro == '3':
@@ -80,12 +80,12 @@ def main():
                 titulo = input("Novo Título: ")
                 id_autor = int(input("Novo ID do Autor: "))
                 id_genero = int(input("Novo ID do Gênero: "))
-                livro_atualizado = Livro(id=id, titulo=titulo, id_autor=id_autor, id_genero=id_genero)
+                livro_atualizado = Livro(id_livro=id, titulo_livro=titulo, id_autor=id_autor, id_genero=id_genero)
                 livro_atualizado.atualizar()
                 print("Livro atualizado com sucesso!")
             elif opcao_livro == '4':
                 id = int(input("ID do Livro: "))
-                livro_remover = Livro(id=id)
+                livro_remover = Livro(id_livro=id)
                 livro_remover.remover()
                 print("Livro removido com sucesso!")
             elif opcao_livro == '5':
@@ -105,23 +105,24 @@ def main():
             opcao_autor = input("Escolha uma opção: ")
             
             if opcao_autor == '1':
-                autores = Autor.listar()
-                for autor in autores:
-                    print(autor)
+                 autores = Autor.listar()
+                 for id_autor, nome_autor in autores:
+                  print(f"ID: {id_autor}, Nome: {nome_autor}")
             elif opcao_autor == '2':
+                id = int(input("ID do Autor: "))
                 nome = input("Nome do Autor: ")
-                novo_autor = Autor(nome=nome)
+                novo_autor = Autor(id_autor=id,nome_autor=nome)
                 novo_autor.inserir()
                 print("Autor adicionado com sucesso!")
             elif opcao_autor == '3':
                 id = int(input("ID do Autor: "))
                 nome = input("Novo Nome: ")
-                autor_atualizado = Autor(id=id, nome=nome)
+                autor_atualizado = Autor(id_autor=id, nome_autor=nome)
                 autor_atualizado.atualizar()
                 print("Autor atualizado com sucesso!")
             elif opcao_autor == '4':
                 id = int(input("ID do Autor: "))
-                autor_remover = Autor(id=id)
+                autor_remover = Autor(id_autor=id)
                 autor_remover.remover()
                 print("Autor removido com sucesso!")
             elif opcao_autor == '5':
@@ -140,23 +141,24 @@ def main():
             opcao_genero = input("Escolha uma opção: ")
             
             if opcao_genero == '1':
-                generos = Genero.listar()
-                for genero in generos:
-                    print(genero)
+                 generos = Genero.listar()
+                 for id_genero, nome_genero in generos:
+                  print(f"ID: {id_genero}, Nome: {nome_genero}")
             elif opcao_genero == '2':
+                id_genero = int(input("ID do Gênero: "))
                 nome = input("Nome do Gênero: ")
-                novo_genero = Genero(nome=nome)
+                novo_genero = Genero(id_genero=id_genero, nomegenero=nome)
                 novo_genero.inserir()
                 print("Gênero adicionado com sucesso!")
             elif opcao_genero == '3':
                 id = int(input("ID do Gênero: "))
                 nome = input("Novo Nome: ")
-                genero_atualizado = Genero(id=id, nome=nome)
+                genero_atualizado = Genero(id_genero=id, nomegenero=nome)
                 genero_atualizado.atualizar()
                 print("Gênero atualizado com sucesso!")
             elif opcao_genero == '4':
                 id = int(input("ID do Gênero: "))
-                genero_remover = Genero(id=id)
+                genero_remover = Genero(id_genero=id)
                 genero_remover.remover()
                 print("Gênero removido com sucesso!")
             elif opcao_genero == '5':
@@ -176,24 +178,27 @@ def main():
             
             if opcao_pedido == '1':
                 pedidos = Pedido.listar()
-                for pedido in pedidos:
-                    print(pedido)
+                for id_pedido,id_livro,quantidade,data_pedido in pedidos:
+                    print(f"IdPedido: {id_pedido} Livro: {id_livro} Quantidade: {quantidade} DataPedido: {data_pedido}")
             elif opcao_pedido == '2':
+                id_pedido = int(input("ID do Pedido: "))
                 id_livro = int(input("ID do Livro: "))
                 quantidade = int(input("Quantidade: "))
-                novo_pedido = Pedido(id_livro=id_livro, quantidade=quantidade)
+                data_pedido = input("Data do Pedido: ")
+                novo_pedido = Pedido(id_pedido=id_pedido,id_livro=id_livro, quantidade=quantidade,data_pedido=data_pedido)
                 novo_pedido.inserir()
                 print("Pedido adicionado com sucesso!")
             elif opcao_pedido == '3':
-                id = int(input("ID do Pedido: "))
+                id_pedido = int(input("ID do Pedido: "))
                 id_livro = int(input("Novo ID do Livro: "))
                 quantidade = int(input("Nova Quantidade: "))
-                pedido_atualizado = Pedido(id=id, id_livro=id_livro, quantidade=quantidade)
+                data_pedido = input("Nova data do pedido: ")
+                pedido_atualizado = Pedido(id_pedido=id_pedido, id_livro=id_livro, quantidade=quantidade, data_pedido=data_pedido)
                 pedido_atualizado.atualizar()
                 print("Pedido atualizado com sucesso!")
             elif opcao_pedido == '4':
-                id = int(input("ID do Pedido: "))
-                pedido_remover = Pedido(id=id)
+                id_pedido = int(input("ID do Pedido: "))
+                pedido_remover = Pedido(id_pedido=id_pedido)
                 pedido_remover.remover()
                 print("Pedido removido com sucesso!")
             elif opcao_pedido == '5':
@@ -203,16 +208,23 @@ def main():
         
         elif opcao == '5':
             print("\nExibir Relatórios:")
-            print("1. Relatório de Vendas por Gênero")
-            print("2. Relatório Detalhado de Pedidos")
-            print("3. Voltar ao Menu Principal")
+            print("1. Relatório de Pedidos por Gênero")
+            print("2. Relatório de Pedidos por Autor")
+            print("3. Relatório Detalhado de todos os  Pedidos")
+            print("4. Voltar ao Menu Principal")
             opcao_relatorio = input("Escolha uma opção: ")
             
             if opcao_relatorio == '1':
-                Relatorio.relatorio_pedidos_por_genero()
+                resultados = Relatorio.relatorio_pedidos_por_genero()
+                for nome_genero,quantidade, in resultados:
+                    print(f"Nome Genero: {nome_genero} Quantidade: {quantidade}")
             elif opcao_relatorio == '2':
-                Relatorio.relatorio_pedidos_detalhados()
+                resultados = Relatorio.relatorio_todos_autores_com_pedidos()
+                for nome_autor,quantidade, in resultados:
+                    print(f"NomeAutor: {nome_autor} Quantidade: {quantidade}")
             elif opcao_relatorio == '3':
+                Relatorio.relatorio_pedidos_detalhados()
+            elif opcao_relatorio == '4':
                 continue
             else:
                 print("Opção inválida.")
